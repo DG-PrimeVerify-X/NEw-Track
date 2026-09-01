@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tracking Admin</title>
+<style>
+body{margin:0;background:#080b12;color:#fff;font-family:Arial,sans-serif;padding:24px}
+.wrap{max-width:900px;margin:auto}
+input,button{padding:12px;border-radius:9px;border:1px solid #303a4d;background:#111722;color:#fff}
+button{cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px}
+.box{background:#111722;border:1px solid #263044;border-radius:14px;padding:18px}
+.num{font-size:30px;font-weight:700;margin-top:8px}
+#status{color:#aeb8c9;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Tracking Admin</h1>
+<input id="key" type="password" placeholder="Admin key">
+<button onclick="loadStats()">Load Stats</button>
+<div id="status">Enter your ADMIN_KEY.</div>
+<div class="grid">
+<div class="box">Visits<div class="num" id="visits">-</div></div>
+<div class="box">Unique<div class="num" id="unique">-</div></div>
+<div class="box">Clicks<div class="num" id="clicks">-</div></div>
+<div class="box">CTR<div class="num" id="ctr">-</div></div>
+</div>
+</div>
+<script>
+async function loadStats(){
+  const key=document.getElementById("key").value;
+  document.getElementById("status").textContent="Loading...";
+  try{
+    const r=await fetch("/api/stats",{
+      headers:{"X-Admin-Key":key}
+    });
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||"Request failed");
+    document.getElementById("visits").textContent=data.visits;
+    document.getElementById("unique").textContent=data.uniqueVisitors;
+    document.getElementById("clicks").textContent=data.clicks;
+    document.getElementById("ctr").textContent=data.ctr+"%";
+    document.getElementById("status").textContent="Loaded successfully.";
+  }catch(e){
+    document.getElementById("status").textContent=e.message;
+  }
+}
+</script>
+</body>
+</html>

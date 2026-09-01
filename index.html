@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Welcome</title>
+<style>
+body{margin:0;background:#080b12;color:#fff;font-family:Arial,sans-serif;min-height:100vh;display:grid;place-items:center}
+.card{text-align:center;width:min(92%,480px);padding:42px 24px;background:#111722;border:1px solid #263044;border-radius:22px;box-sizing:border-box}
+h1{margin:0 0 12px;font-size:34px}
+p{color:#aeb8c9;margin:0 0 28px}
+a{display:inline-block;padding:15px 28px;border-radius:12px;background:#2f7cff;color:white;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Welcome</h1>
+<p>Join our official channel for updates.</p>
+<a id="join" href="https://t.me/your_channel">Join Telegram</a>
+</div>
+<script>
+const sessionId = crypto.randomUUID ? crypto.randomUUID() :
+  Date.now().toString(36) + Math.random().toString(36).slice(2);
+
+const p = new URLSearchParams(location.search);
+
+const payload = {
+  sessionId,
+  ref: p.get("ref") || document.referrer || "direct",
+  utm_medium: p.get("utm_medium") || "",
+  utm_campaign: p.get("utm_campaign") || "",
+  utm_content: p.get("utm_content") || "",
+  landingPage: location.href,
+  referrer: document.referrer || "",
+  screenWidth: screen.width,
+  screenHeight: screen.height,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || ""
+};
+
+fetch("/api/visit", {
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify(payload),
+  keepalive:true
+}).catch(()=>{});
+
+document.getElementById("join").addEventListener("click", () => {
+  fetch("/api/click", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      ...payload,
+      dwellSeconds: Math.round((performance.now() / 1000) * 10) / 10
+    }),
+    keepalive:true
+  }).catch(()=>{});
+});
+</script>
+</body>
+</html>
