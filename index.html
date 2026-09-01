@@ -63,7 +63,7 @@ const data={
  timestamp:new Date().toISOString()
 };
 sessionStorage.setItem("dg9x_session",data.sessionId);
-const API_BASE = "https://tracking-landing-umber.vercel.app";
+const API_BASE = "https://n-ew-track.vercel.app";
 fetch(API_BASE + "/api/visit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data),keepalive:true}).catch(()=>{});
 let remaining=Number(sessionStorage.getItem("dg9x_timer")||COUNTDOWN_SECONDS);
 const countdown=document.getElementById("countdown"), circle=document.getElementById("timerCircle");
