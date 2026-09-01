@@ -22,13 +22,13 @@ export default async function handler(req, res) {
       landing_page: clean(b.landingPage, 1000),
       referrer: clean(b.referrer, 1000),
       user_agent: clean(req.headers["user-agent"], 1000),
-      screen_width: Number(b.screenWidth || 0),
-      screen_height: Number(b.screenHeight || 0),
-      timezone: clean(b.timezone, 100)
+      dwell_seconds: Number(b.dwellSeconds || 0),
+      classification: "likely_real",
+      reasons: []
     };
 
     const { error } = await supabase
-      .from("landing_visits")
+      .from("telegram_clicks")
       .insert(row);
 
     if (error) {
